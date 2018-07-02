@@ -1,0 +1,218 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "defaultValue": "labuser",
+      "type": "securestring"
+    },
+    "adminPassword": {
+      "defaultValue": "M1crosoft123",
+      "type": "securestring"
+    },
+    "logAnalyticsWorkspaceName": {
+      "defaultValue": null,
+      "type": "string"
+    }
+  },
+  "variables": {
+    "vmName": "Monitoring-VM-",
+    "vnetName": "Monitoring-VNet-1",
+    "subnetName": "Monitoring-Subnet-1",
+    "vnetAddressSpace": "10.1.0.0/16",
+    "subnetPrefix": "10.1.1.0/24",
+    "windowsOsVersion": "2016-Datacenter",
+    "storageAccountName": "[concat('storage',uniqueString(resourceGroup().id))]",
+    "logAnalytics": {
+      "serviceTier": "Free",
+      "dataRetention": 7
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "comments": "Create four network interfaces",
+      "apiVersion": "2017-04-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('vmName'), copyIndex(1), '-nic')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat(resourceId('Microsoft.Network/publicIPAddresses', variables('vmName')), copyIndex(1), '-pip')]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')), '/subnets/', variables('subnetName'))]"
+              },
+              "publicIPAddress": {
+                "id": "[concat(resourceId('Microsoft.Network/publicIPAddresses', variables('vmName')), copyIndex(1), '-pip')]"
+              }
+            }
+          }
+        ]
+      },
+      "copy": {
+        "name": "nicLoop",
+        "count": 4
+      }
+    },
+    {
+      "comments": "Create four public IP addresses for VMs",
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[concat(variables('vmName'), copyIndex(1), '-pip')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "dynamic"
+      },
+      "copy": {
+        "name": "pipLoop",
+        "count": 4
+      }
+    },
+    {
+      "comments": "Create two Linux VMs",
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('vmName'), copyIndex(1))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmName'), copyIndex(1) ,'-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A0"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('vmName'), copyIndex(1))]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "canonical",
+            "offer": "UbuntuServer",
+            "sku": "16.04.0-LTS",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vmName'), copyIndex(1), '-nic'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))).primaryEndpoints.blob]"
+          }
+        }
+      },
+      "copy": {
+        "name": "linuxVmLoop",
+        "count": 2
+      }
+    },
+    {
+      "comments": "Create two windows 2016 VMs",
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('vmName'), copyIndex(3))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmName'), copyIndex(3) ,'-nic')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A2"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('vmName'), copyIndex(3))]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "[variables('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vmName'), copyIndex(3), '-nic'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))).primaryEndpoints.blob]"
+          }
+        }
+      },
+      "copy": {
+        "name": "windowsVmLoop",
+        "count": 2
+      }
+    },
+    {
+      "comments": "Single VNet with 1 subnet",
+      "name": "[variables('vnetName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+          "addressSpace": {
+              "addressPrefixes": [
+                  "[variables('vnetAddressSpace')]"
+              ]
+          },
+          "subnets": [
+              {
+                  "name": "[variables('subnetName')]",
+                  "properties": {
+                      "addressPrefix": "[variables('subnetPrefix')]"
+                  }
+              }
+          ]
+      }
+  },
+  {
+    "apiVersion": "2017-03-15-preview",
+    "type": "Microsoft.OperationalInsights/workspaces",
+    "name": "[parameters('logAnalyticsWorkspaceName')]",
+    "location": "[resourceGroup().location]",
+    "properties": {
+      "sku": {
+        "Name": "[variables('logAnalytics').serviceTier]"
+      },
+  "retention": "[variables('logAnalytics').dataRetention]"
+    }
+  }
+  ]
+}
