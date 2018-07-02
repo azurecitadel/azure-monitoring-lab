@@ -86,7 +86,7 @@ Once the template has finished, let's take a look at the lab environment and wha
 
 **2)** You will see the resources that have been deployed into the resource group. You can use the right hand drop down box to 'group by type' which helps to make the resource list clearer. The list should look as shown in figure 1.
 
-![Resource List](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/resources.png "Resource List")
+![Resource List](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/resources.png "Resource List")
 
 **Figure 1:** Resource List in the Azure Portal
 
@@ -106,7 +106,7 @@ Start by navigating to the Azure Monitor page:
 
 **3)** Click on 'Subscription Summary' on the left hand menu. This will take you to a summary page where you can see information about monitoring in your subscription, such as the number of alerts fired, activity log errors and Azure service health, as shown in figure 2.
 
-![Azure Monitor Summary View](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/monitor-summary.png "Azure Monitor Summary View")
+![Azure Monitor Summary View](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/monitor-summary.png "Azure Monitor Summary View")
 
 **Figure 2:** Azure Monitor - Subscription Summary View
 
@@ -120,7 +120,7 @@ Start by navigating to the Azure Monitor page:
 
 **8)** Select 'Activity Log' from the left hand menu. This shows a filterable view of all activity in your subscription - you can filter based on timespan, event severity, resource type and operation. Modify some of the filter fields in this screen to narrow down the search criteria.
 
-![Azure Monitor Activity Log](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/AzMonActivity.jpg "Azure Monitor Activity Log")
+![Azure Monitor Activity Log](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/AzMonActivity.jpg "Azure Monitor Activity Log")
 
 **Figure 2:** Azure Monitor - Subscription Summary View
 
@@ -130,7 +130,7 @@ Now that we've spent some time exploring Azure Monitor, let's look at some of th
 
 **1)** In the Azure Monitor menu on the left, select 'Metrics (Preview)'. In the 'resource' box at the top of the screen, search for 'monitoring' and then select the 'Monitoring-VM-1' virtual machine in the drop-down menu. Select 'host' as the sub-service and then 'Percentage CPU' as the metric.
 
-![Azure Monitor CPU Metrics](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/AzMonMetrics.png "Azure Monitor CPU Metrics")
+![Azure Monitor CPU Metrics](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/AzMonMetrics.png "Azure Monitor CPU Metrics")
 
 **Figure 3:** Azure Monitor - CPU Metrics
 
@@ -171,7 +171,7 @@ stress: info: [61727] dispatching hogs: 50 cpu, 0 io, 0 vm, 0 hdd
 
 **13)** After approximately 5 minutes, you should receive an email alerting you to the high CPU on your VM:
 
-![Azure Monitor Email Alert](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/AzMonAlert.png "Azure Monitor Email Alert")
+![Azure Monitor Email Alert](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/AzMonAlert.png "Azure Monitor Email Alert")
 
 **Figure 4:** Azure Monitor - Email Alert
 
@@ -195,7 +195,7 @@ In this section, we'll configure another alert rule - this time, instead of send
 
 **7)** Choose your subscription and then under the 'Automation Account' drop down menu, select '+ New'. Create a new automation account called 'monitoring-automation' in the 'monitoring-lab' resource group (ensure the region is the same as previously used). Choose OK for all open dialog boxes. The screen should look as shown in figure 5.
 
-![Azure Monitor Shutdown Alert](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/AzMonAlert2.png "Azure Monitor Shutdown Alert")
+![Azure Monitor Shutdown Alert](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/AzMonAlert2.png "Azure Monitor Shutdown Alert")
 
 **Figure 4:** Azure Monitor - Shutdown Alert
 
@@ -223,7 +223,7 @@ The first thing we'll do in this section is to connect our resources to the log 
 
 **2)** Click on each of the four VMs in turn and click on 'Connect' - if the VM shows as connected to another worspace, disconnect it first. After some time, you should see all VMs connected to the workspace, similar to figure 1:
 
-![Connecting Virtual Machines to Log Analytics](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/VM-Connect-LogAnalytics.png "Connecting Virtual Machines to Log Analytics")
+![Connecting Virtual Machines to Log Analytics](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/VM-Connect-LogAnalytics.png "Connecting Virtual Machines to Log Analytics")
 
 **Figure 1:** Connecting Virtual Machines to Log Analytics
 
@@ -233,7 +233,7 @@ Next, we'll connect the Azure Activity Log to our log analytics workspace. The A
 
 **1)** On the left hand menu under _Workspace Data Sources_, click on 'Azure Activity Log'. Select your subscription and then click 'Connect'. You should now see your subscription showing connected, as shown in figure 2:
 
-![Connecting Activity Log](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/activity-log-connect.png "Connecting Activity Log")
+![Connecting Activity Log](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/activity-log-connect.png "Connecting Activity Log")
 
 **Figure 2:** Connecting the Azure Activity Log to Log Analytics
 
@@ -249,13 +249,13 @@ Once this is complete, we'll configure Log Analytics to collect event and perfor
 
 **4)** Under 'Linux Perfomance Counters', check the box entitled 'Apply below configuration to my machines' and then select 'Add the Selected Performance Counters'. This will add a set of suggested performance counters for the Linux machines.
 
-![Linux Counters](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/Linux-Counters.png "Linux Counters")
+![Linux Counters](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/Linux-Counters.png "Linux Counters")
 
 **Figure 3:** Adding Linux Performance Counters to Log Analytics
 
 **5)** Click on 'Syslog' and then select 'Apply below configuration to my machines'. Type in 'kern' and then the '+' sign to add. Type in 'auth' and again, click the '+' sign.
 
-![Add Syslog](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/add-syslog.png "Add Syslog")
+![Add Syslog](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/add-syslog.png "Add Syslog")
 
 **Figure 4:** Adding Syslog Collection to Log Analytics
 
@@ -271,7 +271,7 @@ To add solutions to the Log Analytics workspace, use the following steps:
 
 **1)** In the Azure portal, click the '+' sign in the top left to create a new resource and then select 'Monitoring + Management'. Click 'See All'.
 
-![Add Solution](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/add-solution.png "Add Solution")
+![Add Solution](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/add-solution.png "Add Solution")
 
 **Figure 5:** Adding a Solution to Log Analytics
 
@@ -287,7 +287,7 @@ To add solutions to the Log Analytics workspace, use the following steps:
 
 **5)** Verify that the solutions have been added correctly by navigating to your Log Analytics workspace and then selecting 'Solutions' from the menu, as shown in figure 6:
 
-![Solutions List](https://github.com/Araffe/azure-monitoring-lab/blob/master/images/solutions-list.png "Solutions List")
+![Solutions List](https://github.com/azurecitadel/azure-monitoring-lab/blob/master/images/solutions-list.png "Solutions List")
 
 **Figure 6:** Listing Log Analytics Solutions
 
